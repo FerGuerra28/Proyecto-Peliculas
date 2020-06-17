@@ -244,7 +244,7 @@ $pas = mysqli_real_escape_string(conectar(),$_POST["txtpass"]);
             $_SESSION["correo"] = $log[3];
             $_SESSION['verificado'] = true;
         echo "<script>alert('¡Bienvenido!')
-             document.location=('../vista/miperfil.php')</script>";
+             document.location=('../vista/listapeliculas.php')</script>";
         }
 
     }else{
