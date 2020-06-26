@@ -1,12 +1,11 @@
 <?php
 require_once ('../db/conexion.php');
-require_once ('../modelo/pelicula.php');
+require_once ('../modelo/serie.php');
 require_once ('../modelo/categoria.php');
 conectar();
 session_start();
 include('templates/validar.php');
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,11 +13,11 @@ include('templates/validar.php');
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Las mejores noticias de cine y series|PurOcio.com</title>
-    <link href="css/jquery-ui.css" rel="stylesheet">
-            <link href="css/bootstrap.min.css" rel="stylesheet">
-            <link href="css/simple-sidebar.css" rel="stylesheet">
-            <link href="css/datatables.css" rel="stylesheet">
-            <link href="css/notificacion.css"rel="stylesheet">
+<link href="css/jquery-ui.css" rel="stylesheet">
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/simple-sidebar.css" rel="stylesheet">
+        <link href="css/datatables.css" rel="stylesheet">
+        <link href="css/notificacion.css"rel="stylesheet">
 </head>
 
 <body background="img/fondito1.jpg">
@@ -33,29 +32,34 @@ include('templates/validar.php');
 
      <div class="panel panel-primary">
 
-  <div class="panel-heading" style="text-align:center;"><h2>Registros de Peliculas</h2></div>
+  <div class="panel-heading" style="text-align:center;"><h2>Registros de Series</h2></div>
   </br>
+
+
+
+  </br> </br>
+
   <div class="panel panel-success col-md-4">
-  <div class="panel-heading " style="background-color: #646c7a; color: white;border-color: #DAA520;"><h1 style="text-align:center"><b>Reportes</b></div>
+  <div class="panel-heading " style="background-color: #646c7a; color: white;border-color: #DAA520;"><h1 style="text-align:center"><b>Reporte en base a visitas</b></div>
   </br>
 
-    <!-- <form class="form-horizontal" action="ficheroexcelPeliculas.php" method="post" data-toggle="validator" enctype="multipart/form-data"> -->
-<form class="form-horizontal" action="ExportarPeliculas.php" method="post" data-toggle="validator" enctype="multipart/form-data">
+    <form class="form-horizontal" action="ExportarSeries.php" method="post" data-toggle="validator" enctype="multipart/form-data">
 
+      <div class="form-group">
 
-  <div class="form-group">
+        <label class="col-md-4 control-label" for="criterio" >Criterio : </label>
+        <div class="col-md-4">
+        <select class="col-md-2 form-control" name="criterio" id="criterio"  >
 
-    <label class="col-md-4 control-label" for="criterio" >Criterio : </label>
-    <div class="col-md-4">
-    <select class="col-md-2 form-control" name="criterio" id="criterio"  >
+       <option value="visitas" >VISITAS</option>
+       <option value="valoracion" >VALORACION</option>
 
-   <option value="visitas" >VISITAS</option>
-   <option value="valoracion" >VALORACION</option>
+        </select>
 
-    </select>
-
-    </div>
+        </div>
   </div>
+
+
       <div class="form-group">
 
         <label class="col-md-4 control-label" for="top" >TOP : </label>
@@ -135,7 +139,7 @@ include('templates/validar.php');
             <div class="col-md-4"></div>
             <div class="col-md-4">
 
-                <a class='btn btn-info  '  href='graficoPeliculas.php'>Generar gráfico</a>
+                <a class='btn btn-info  '  href='graficoSeries.php'>Generar gráfico</a>
             </div>
           </div>
 
@@ -146,11 +150,13 @@ include('templates/validar.php');
 
 
     </div>
+
+
     <div class="panel panel-success col-md-6">
     <div class="panel-heading " style="background-color: #646c7a; color: white;border-color: #DAA520;"><h1 style="text-align:center"><b>Reporte en base a fecha de registro</b></div>
     </br>
 
-      <form class="form-horizontal" action="ExportarPeliculas2.php" method="post" data-toggle="validator" enctype="multipart/form-data">
+      <form class="form-horizontal" action="ExportarSeries2.php" method="post" data-toggle="validator" enctype="multipart/form-data">
 
 
         <div class="form-group">
@@ -201,7 +207,7 @@ include('templates/validar.php');
               <div class="col-md-4"></div>
               <div class="col-md-4">
 
-                  <a class='btn btn-info  '  href='graficoPeliculas2.php'>Generar gráfico</a>
+                  <a class='btn btn-info  '  href='graficoSeries2.php'>Generar gráfico</a>
               </div>
             </div>
 
@@ -212,17 +218,18 @@ include('templates/validar.php');
 
       </div>
 
-  </br> </br>
-  <div class="table-responsive col-md-12">
+
+
+  <div class="table-responsive col-md-12" >
                   <table class="table table-hover" id="tablita" border="0" >
                     <thead>
                   <tr bgcolor="#ABBCB7  ">
                   <th style="text-align:center;">N°</th>
                   <th style="text-align:center;">Titulo</th>
-                  <th style="text-align:center;">Duracion</th>
-                  <th style="text-align:center;">Director</th>
-                  <th style="text-align:center;">Puntuacion</th>
                   <th style="text-align:center;">Descripcion</th>
+                  <th style="text-align:center;">Director</th>
+                  <th style="text-align:center;">Episodios</th>
+                  <th style="text-align:center;">Temporadas</th>
                   <th style="text-align:center;">Imagen</th>
                   <th style="text-align:center;">Trailer</th>
                   <th style="text-align:center;">Categoria</th>
@@ -236,9 +243,9 @@ include('templates/validar.php');
 
           $cod = $_SESSION["cod"];
 
-          $pelicula = new Pelicula();
+          $serie = new Serie();
 
-          $r = $pelicula->listapeliculas();
+          $r = $serie->listaseries();
 
           $numeracion=1;
 
@@ -252,14 +259,15 @@ echo "<tr BGCOLOR='white'><td align='center'>".$numeracion."</td>";
 //Titulo
 echo "<td align='center'>".$row["1"]."</td>";
 
-//Duracion
+//Director
 echo "<td align='center'>".$row["2"]."</td>";
 
-//Director
+//Episodios
 echo "<td align='center'>".$row["3"]."</td>";
 
-//Puntuacion
+//Temporadas
 echo "<td align='center'>".$row["4"]."</td>";
+
 
 //Descripcion
 $des = substr($row["5"],0,50);
@@ -277,11 +285,11 @@ echo "<td align='center'>".$row["7"]."</td>";
 echo "<td align='center'>".$row["8"]."</td>";
 
 //Modificar
-echo "<td align='center'><a class='btn btn-success' href='modificar-pelicula.php?idpelicula=".$row["0"]."'>Modificar</a></td>";
+echo "<td align='center'><a class='btn btn-success' href='modificar-serie.php?idserie=".$row["0"]."'>Modificar</a></td>";
 
 //Eliminar
 echo "<td align='center'>
-       <a class='btn btn-danger' onclick='return Confirmation()' href='../controlador/peliculacontrolador.php?action=eliminar&&idpelicula=".$row["0"]."'>Eliminar</a></td</tr>";
+       <a class='btn btn-danger' onclick='return Confirmation()' href='../controlador/seriecontrolador.php?action=eliminar&&idserie=".$row["0"]."'>Eliminar</a></td</tr>";
 
 $numeracion++;
 
@@ -292,8 +300,6 @@ $numeracion++;
 ?>
 
                 </table>
-
-
 
               </div>
 
@@ -317,12 +323,29 @@ $numeracion++;
 <script src="https://cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"></script>
 <script src="js/datatables.js"></script>
 
-
 <script>
   $("#menu-toggle").click(function(e) {
     e.preventDefault();
     $("#wrapper").toggleClass("toggled");
   });
+</script>
+
+<script>
+
+  $(document).ready(function() {
+    $('#tablita').DataTable( {
+
+
+        lengthMenu: [[5,10,20,-1],["5","10","20","Todos"]],
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json",
+
+        }
+
+
+      })
+} );
+
 </script>
 
 <script>
@@ -382,23 +405,6 @@ if ($.datepicker.parseDate('dd/mm/yy', f2) < $.datepicker.parseDate('dd/mm/yy', 
 }else{
 }
 }
-
-</script>
-<script>
-
-  $(document).ready(function() {
-    $('#tablita').DataTable( {
-
-
-        lengthMenu: [[5,10,20,-1],["5","10","20","Todos"]],
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json",
-
-        }
-
-
-      })
-} );
 
 </script>
 

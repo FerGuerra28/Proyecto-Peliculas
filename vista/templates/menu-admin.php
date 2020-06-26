@@ -51,6 +51,7 @@ header("X-XSS-Protection: 1; mode=block");
                  <li><a href="listatematicas.php">Detalle Tematica</a></li></ul>
 </ul>
       </li>
+  <li class="active"><a href="panelcontrol.php">Panel de Control</a></li>
     </ul>
 
     <ul class="nav navbar-nav navbar-right">
